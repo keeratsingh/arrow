@@ -124,11 +124,6 @@ message HandshakeRequest {
    * A defined protocol version
    */
   uint64 protocol_version = 1;
-
-  /*
-   * Arbitrary auth/handshake info.
-   */
-  bytes payload = 2;
 }
 
 message HandshakeResponse {
@@ -137,19 +132,6 @@ message HandshakeResponse {
    * A defined protocol version
    */
   uint64 protocol_version = 1;
-
-  /*
-   * Arbitrary auth/handshake info.
-   */
-  bytes payload = 2;
-}
-
-/*
- * A message for doing simple auth.
- */
-message BasicAuth {
-  string username = 2;
-  string password = 3;
 }
 
 message Empty {}
