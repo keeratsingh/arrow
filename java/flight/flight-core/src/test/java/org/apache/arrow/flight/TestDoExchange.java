@@ -255,7 +255,7 @@ public class TestDoExchange {
     }
 
     @Override
-    public void doExchange(CallContext context, FlightStream reader, ServerStreamListener writer) {
+    public void doExchange(FlightContext context, FlightStream reader, ServerStreamListener writer) {
       if (Arrays.equals(reader.getDescriptor().getCommand(), EXCHANGE_METADATA_ONLY)) {
         metadataOnly(context, reader, writer);
       } else if (Arrays.equals(reader.getDescriptor().getCommand(), EXCHANGE_DO_GET)) {
@@ -272,7 +272,7 @@ public class TestDoExchange {
     }
 
     /** Emulate DoGet. */
-    private void doGet(CallContext context, FlightStream reader, ServerStreamListener writer) {
+    private void doGet(FlightContext context, FlightStream reader, ServerStreamListener writer) {
       final Schema schema = new Schema(Collections.singletonList(Field.nullable("a", new ArrowType.Int(32, true))));
       try (VectorSchemaRoot root = VectorSchemaRoot.create(schema, allocator)) {
         writer.start(root);
@@ -290,7 +290,7 @@ public class TestDoExchange {
     }
 
     /** Emulate DoPut. */
-    private void doPut(CallContext context, FlightStream reader, ServerStreamListener writer) {
+    private void doPut(FlightContext context, FlightStream reader, ServerStreamListener writer) {
       int counter = 0;
       while (reader.next()) {
         if (!reader.hasRoot()) {
@@ -307,7 +307,7 @@ public class TestDoExchange {
     }
 
     /** Exchange metadata without ever exchanging data. */
-    private void metadataOnly(CallContext context, FlightStream reader, ServerStreamListener writer) {
+    private void metadataOnly(FlightContext context, FlightStream reader, ServerStreamListener writer) {
       final ArrowBuf buf = allocator.buffer(4);
       buf.writeInt(42);
       writer.putMetadata(buf);
@@ -319,7 +319,7 @@ public class TestDoExchange {
     }
 
     /** Echo the client's response back to it. */
-    private void echo(CallContext context, FlightStream reader, ServerStreamListener writer) {
+    private void echo(FlightContext context, FlightStream reader, ServerStreamListener writer) {
       VectorSchemaRoot root = null;
       VectorLoader loader = null;
       while (reader.next()) {
@@ -352,7 +352,7 @@ public class TestDoExchange {
     }
 
     /** Accept a set of messages, then return some result. */
-    private void transform(CallContext context, FlightStream reader, ServerStreamListener writer) {
+    private void transform(FlightContext context, FlightStream reader, ServerStreamListener writer) {
       final Schema schema = reader.getSchema();
       for (final Field field : schema.getFields()) {
         if (!(field.getType() instanceof ArrowType.Int)) {

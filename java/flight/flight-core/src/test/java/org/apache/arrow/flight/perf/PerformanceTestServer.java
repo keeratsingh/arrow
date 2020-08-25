@@ -75,8 +75,8 @@ public class PerformanceTestServer implements AutoCloseable {
   private final class PerfProducer extends NoOpFlightProducer {
 
     @Override
-    public void getStream(CallContext context, Ticket ticket,
-        ServerStreamListener listener) {
+    public void getStream(FlightContext context, Ticket ticket,
+                          ServerStreamListener listener) {
       VectorSchemaRoot root = null;
       try {
         Token token = Token.parseFrom(ticket.getBytes());
@@ -139,8 +139,8 @@ public class PerformanceTestServer implements AutoCloseable {
     }
 
     @Override
-    public FlightInfo getFlightInfo(CallContext context,
-        FlightDescriptor descriptor) {
+    public FlightInfo getFlightInfo(FlightContext context,
+                                    FlightDescriptor descriptor) {
       try {
         Preconditions.checkArgument(descriptor.isCommand());
         Perf exec = Perf.parseFrom(descriptor.getCommand());
